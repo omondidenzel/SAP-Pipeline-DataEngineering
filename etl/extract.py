@@ -94,7 +94,7 @@ df = df.drop(columns=['account_name'], axis=1)
 log.info('Data loaded')
 
 # Loading to csv
-df.to_csv('dataset.csv',index=False)
+df.to_csv('etl/dataset.csv',index=False)
 
 log.info('Data saved in CSV')
 

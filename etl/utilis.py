@@ -12,20 +12,20 @@ log = logging.getLogger(__name__)
 
 load_dotenv(find_dotenv())
 
-#AWS 
+# AWS config
 region_name = os.getenv('AWS_REGION_NAME')
 aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
 aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
 aws_bucket_name = os.getenv('AWS_BUCKET_NAME')
 
-#DB
+# DB config
 db_name =  os.getenv('DATABASE_NAME')
 db_username =  os.getenv('DATABASE_USER_NAME')
 db_pass =  os.getenv('DATABASE_PASSWORD')
 db_host =  os.getenv('DATABASE_HOST')
 db_table =  os.getenv('DATABASE_TABLE')
 
-data = 'dataset.csv'
+data = 'etl/dataset.csv'
 
 # Connect to DWH 
 def connect_to_dwh(db_name, db_username, db_pass, db_host):
@@ -40,7 +40,7 @@ def connect_to_dwh(db_name, db_username, db_pass, db_host):
         return conn
     
     except Exception as e:
-        log.info('Cannot connect to DWH ', e)
+        log.info('Cannot connect to DWH', e)
         raise e
 
 # connect_to_dwh(db_name, db_username, db_password, db_host, db_port)
@@ -52,12 +52,13 @@ def copy_file_to_db(db_table, data):
 # Copy to DB directly
     try:
         log.info(f'Copying csv to: {db_table} table')
+        # read csv file
         loadToDB = pd.read_csv(data)
        
         #Copy file to db
         loadToDB.to_sql(db_table, con = conn, index=False, if_exists='replace')
 
-        log.info(f'Data copied successfully: {loadToDB.shape[0]} rows')
+        log.info(f'Data copied successfully: {loadToDB.shape[0]} rows.')
     except Exception as e:
         log.info(f'Failed to copy to DB {e}')
         # raise e
@@ -82,4 +83,4 @@ def copy_file_to_db(db_table, data):
     #     log.info("Couldn't copy file to redshift table ", e)
     #     #raise e
 
-copy_file_to_db(db_table,data)
+copy_file_to_db(db_table, data)
